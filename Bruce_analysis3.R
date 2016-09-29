@@ -1,6 +1,6 @@
 #This file analyzes Bruce Hill data on powerlines.
 
-# In this study I (Bruce) surveyed 10 study sites (2km2). 
+# In this study BH surveyed 10 study sites (2km2). 
 # 5 study sites were bisected by a maintained powerline corridor, 5 were not.
 # The habitat types surveyed in this study were:
 # a)    Corridors;
@@ -188,6 +188,23 @@ plot(m) #residuals are more or less ok.
 summary(m)
 anova(m)
 
+#Calculate power
+library(simr)
+#run omly in lme4
+m <- lmer(abundance ~ Flower_density + Habitat + Corridor + (1 | Site/Plot), 
+         na.action = na.omit,
+         data = dat) # lmer can't handle Varident #, weights = varIdent(form=~1|Habitat))
+fixef(m)["Flower_density"] <- 0.11 #add a similar value to real estimate.
+
+#Calculate power
+powerSim(m, test = fixed("Flower_density")) 
+ps_fl <- lastResult()
+powerSim(m, test = fixed("Habitat")) 
+ps_hab <- lastResult()
+powerSim(m, test = fixed("Corridor")) 
+ps_cor <- lastResult()
+
+#next
 plot(dat$abundance ~ dat$Flower_density, las = 1)
 abline(lm(dat$abundance ~ dat$Flower_density))
 
@@ -196,6 +213,22 @@ m <- lme(richness ~ Flower_density + Habitat + Corridor, na.action = na.omit,
 plot(m)
 summary(m)
 anova(m)
+
+#power
+#run omly in lme4
+m <- lmer(richness ~ Flower_density + Habitat + Corridor + (1 | Site/Plot), 
+          na.action = na.omit,
+          data = dat) # lmer can't handle Varident #, weights = varIdent(form=~1|Habitat))
+fixef(m)["Flower_density"] <- 0.02 #add a similar value to real estimate.
+
+#Calculate power
+powerSim(m, test = fixed("Flower_density")) 
+ps_fl <- lastResult()
+powerSim(m, test = fixed("Habitat")) 
+ps_hab <- lastResult()
+powerSim(m, test = fixed("Corridor")) 
+ps_cor <- lastResult()
+
 
 plot(dat$richness ~ dat$Flower_density, las = 1)
 abline(lm(dat$richness ~ dat$Flower_density))
