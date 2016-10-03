@@ -194,13 +194,20 @@ library(simr)
 m <- lmer(abundance ~ Flower_density + Habitat + Corridor + (1 | Site/Plot), 
          na.action = na.omit,
          data = dat) # lmer can't handle Varident #, weights = varIdent(form=~1|Habitat))
-fixef(m)["Flower_density"] <- 0.11 #add a similar value to real estimate.
+
+fixef(m)["HabitatSemi_natural_grasslands"] <- 1.69 #add an effect size expected of 25% difference between habitat and powerline.
 
 #Calculate power
-powerSim(m, test = fixed("Flower_density")) 
-ps_fl <- lastResult()
+#powerSim(m, test = fixed("Flower_density")) 
 powerSim(m, test = fixed("Habitat")) 
 ps_hab <- lastResult()
+
+#Calculate power
+
+m <- lmer(abundance ~ Flower_density + Habitat + Corridor + (1 | Site/Plot), 
+          na.action = na.omit,
+          data = dat) # lmer can't handle Varident #, weights = varIdent(form=~1|Habitat))
+fixef(m)["CorridorYes"] <- 1.36 #add an effect size expected.
 powerSim(m, test = fixed("Corridor")) 
 ps_cor <- lastResult()
 
@@ -219,13 +226,18 @@ anova(m)
 m <- lmer(richness ~ Flower_density + Habitat + Corridor + (1 | Site/Plot), 
           na.action = na.omit,
           data = dat) # lmer can't handle Varident #, weights = varIdent(form=~1|Habitat))
-fixef(m)["Flower_density"] <- 0.02 #add a similar value to real estimate.
+tapply(dat$richness, dat$Habitat, mean)
+fixef(m)["HabitatSemi_natural_grasslands"] <- 0.53 
 
 #Calculate power
-powerSim(m, test = fixed("Flower_density")) 
-ps_fl <- lastResult()
+#powerSim(m, test = fixed("Flower_density")) 
 powerSim(m, test = fixed("Habitat")) 
 ps_hab <- lastResult()
+m <- lmer(richness ~ Flower_density + Habitat + Corridor + (1 | Site/Plot), 
+          na.action = na.omit,
+          data = dat) # lmer can't handle Varident #, weights = varIdent(form=~1|Habitat))
+tapply(dat$richness, dat$Corridor, mean)
+fixef(m)["CorridorYes"] <- 0.48 
 powerSim(m, test = fixed("Corridor")) 
 ps_cor <- lastResult()
 
