@@ -589,5 +589,8 @@ list <- unique(d[,c("Habitat", "Gen_sp")])
 list[order(list$Habitat),]
 table(list$Habitat)
 unique(d$Gen_sp) #wow, all species are found in corridors!!
+head(d)
+#Table S1
+table(d$Gen_sp , d$Habitat)
 
 
